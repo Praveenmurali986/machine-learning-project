@@ -2,16 +2,17 @@ from lib2to3.pgen2.token import NAME
 from unicodedata import name
 from pytz import VERSION
 from setuptools import setup
-from setuptools import setup
+from setuptools import setup,find_packages
 from tables import Description
 from typing import List
+import numpy as np
 
 
 
 
 
-NAME='housing_prediction'
-VERSION='0.0.1'
+NAME='housing_predictor'
+VERSION='0.0.3'
 AUTHOR='praveen'
 DESCRIPTION='First ml project'
 PACKAGES=['housing']
@@ -26,7 +27,7 @@ def get_requirements_list()->List[str]:
 
     '''
     with open(REQUIREMENT_FILE_NAME) as requirement_file:
-        return requirement_file.readlines()
+        return requirement_file.readlines().remove('-e .')
 
 
 setup(
@@ -34,11 +35,9 @@ name=NAME,
 version=VERSION,
 author=AUTHOR,
 description=DESCRIPTION,
-pakages=PACKAGES,
+packages=find_packages(),
 install_requires=get_requirements_list()
 
 )
 
 
-if __name__=='__main__':
-    print(get_requirements_list())
