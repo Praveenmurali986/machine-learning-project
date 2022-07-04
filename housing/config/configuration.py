@@ -1,9 +1,9 @@
 from cmath import log
 import imp
 import housing
-from housing.entity.config_entity import DataIngestionConfig,DataTransformationConfig,DataValidationConfig,  \
+from housing.entity.config_entity import DataIngestionConfig,DataTransformationConfig,DataValidationConfig, \
 TrainingPipelineConfig,ModelEvaluationConfig,ModelTrainerConfig,ModelPusherConfig
-from util import util
+from housing.util import util
 from housing.constant import *
 from housing.util.util import read_yaml_file
 from housing.exception import HousingException
@@ -28,6 +28,7 @@ class Configuration:
 
     def get_data_ingestion_config(self)-> DataIngestionConfig:
         try:
+            
             artifact_dir=self.training_pipeline_config.artifact_dir
             data_ingestion_info=self.config_info[DATA_INGESTION_CONFIG_KEY] 
 
@@ -76,19 +77,41 @@ class Configuration:
 
     def get_data_validation_config(self)-> DataValidationConfig:
         try:
-            artifact_dir=self.training_pipeline_config.artifact_dir
-            data_validation_info=self.config_info[DATA_VALIDATION_CONFIG_KEY]
-            schema_file_path=os.path.join(
+            artifact_dir=self.get_training_pipeline_config().artifact_dir
+            data_validation_config=self.config_info[DATA_VALIDATION_CONFIG_KEY]
+
+            data_validation_artifact_dir=os.path.join(
                 artifact_dir,
-                data_validation_info[DATA_VALIDATION_SCHEMA_FILE_NAME_KEY]
+                DATA_INGESTION_ARTIFACT_DIR,
+                self.time_stamp
+            )       
+
+            schema_file_path=os.path.join(
+                ROOT_DIR,
+                data_validation_config[DATA_VALIDATION_SCHEMA_DIR_KEY],
+                data_validation_config[DATA_VALIDATION_SCHEMA_FILE_NAME_KEY]
             )
 
-            data_validation_config=DataValidationConfig(
-                schema_file_path=schema_file_path
+            report_file_path=os.path.join(
+                data_validation_artifact_dir,
+                data_validation_config[DATA_VALIDATION_REPORT_FILE_NAME_KEY]
             )
+
+            report_page_file_path=os.path.join(
+                data_validation_artifact_dir,
+                data_validation_config[DATA_VALIDATION_REPORT_PAGE_FILE_NAME_KEY]
+            )
+
+
+            return  DataValidationConfig(
+                schema_file_path=schema_file_path,
+                report_file_path=report_file_path,
+                report_page_file_path=report_page_file_path
+            )
+
         except Exception as e:
             raise HousingException(e,sys) from e
-        return data_validation_config
+        
 
     def get_data_transformation_config(self)-> DataTransformationConfig:
         pass
