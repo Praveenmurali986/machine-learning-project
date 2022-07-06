@@ -19,7 +19,7 @@ numerical_columns:
   - population
   - households
   - median_income
-
+  
 
 
 categorical_columns:
