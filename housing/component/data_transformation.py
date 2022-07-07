@@ -1,5 +1,3 @@
-
-
 from sklearn import preprocessing
 from housing.logger import logging
 from housing.exception import HousingException
@@ -24,7 +22,7 @@ from housing.util.util import read_yaml_file,save_numpy_array_data,save_object,l
 class FeatureGenerator(BaseEstimator,TransformerMixin):
     def __init__(
         self,
-        add_bedroom_per_rooms=True,
+        add_bedrooms_per_room=True,
         total_bedrooms_ix=4,
         total_rooms_ix=3,
         households_ix=6,
@@ -40,7 +38,7 @@ class FeatureGenerator(BaseEstimator,TransformerMixin):
                 self.households_ix=self.columns.index(COLUMN_HOUSEHOLDS)
                 self.population_ix=self.columns.index(COLUMN_POPULATION)
 
-            self.add_bedrooms_per_room=add_bedroom_per_rooms
+            self.add_bedrooms_per_room=add_bedrooms_per_room
             self.total_bedrooms_ix=total_bedrooms_ix
             self.total_rooms_ix=total_rooms_ix
             self.households_ix=households_ix
@@ -111,7 +109,7 @@ class DataTransformation:
             num_pipeline=Pipeline(steps=[
                 ('imputer',SimpleImputer(strategy='median')),
                 ('feature_generator',FeatureGenerator(
-                    add_bedroom_per_rooms=self.data_transformation_config.add_bedroom_per_room,
+                    add_bedrooms_per_room=self.data_transformation_config.add_bedroom_per_room,
                     columns=numerical_columns
                 )),
                 ('scaler',StandardScaler())
@@ -159,10 +157,10 @@ class DataTransformation:
 
             logging.info('spliting input and target feature from trainig and testing dataframe')
 
-            input_feature_train_df=train_df.drop(column=[target_column_name],axis=1)
+            input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df=train_df[[target_column_name]]
 
-            input_feature_test_df=test_df.drop(column=[target_column_name],axis=1)
+            input_feature_test_df=test_df.drop(columns=[target_column_name],axis=1)
             target_feature_test_df=test_df[[target_column_name]]
 
             logging.info('applying preprocessing object on train and test dataframe')
@@ -170,8 +168,8 @@ class DataTransformation:
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
 
-            train_arr=np.c_(input_feature_train_arr,np.array(target_feature_train_df))
-            test_arr=np.c_(input_feature_test_arr,np.array(target_feature_test_df))
+            train_arr=np.c_[input_feature_train_arr,np.array(target_feature_train_df)]
+            test_arr=np.c_[input_feature_test_arr,np.array(target_feature_test_df)]
 
             transformed_train_dir=self.data_transformation_config.transformed_train_dir
             transformed_test_dir=self.data_transformation_config.transformed_test_dir

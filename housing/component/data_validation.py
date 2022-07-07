@@ -133,6 +133,8 @@ class DataValidation:
             )
             logging.info(f'data validation artifact :{data_validation_artifact}')
 
+            return data_validation_artifact
+
             
 
         except Exception as e:
