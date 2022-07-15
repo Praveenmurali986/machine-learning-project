@@ -134,8 +134,10 @@ dmypy.json
 *.ipynb
 
 ref
-/notebook/example.ipynb
-notebook/example.ipynb
+
 
 /EDA.ipynb
 notebook/example.ipynb
+/example.ipynb
+
+/demo.py
