@@ -141,3 +141,6 @@ notebook/example.ipynb
 /example.ipynb
 
 /demo.py
+
+/notebook/
+    example.ipynb
