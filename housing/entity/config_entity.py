@@ -14,7 +14,7 @@ DataValidationConfig=namedtuple('DataValidationConfig',["schema_file_path",'repo
 DataTransformationConfig=namedtuple('DataTransformationConfig',["add_bedroom_per_room","transformed_train_dir","transformed_test_dir","preprocessed_object_file_path"])
 #preprocessed_object_file_path is the file path of pickle file of the transformed data
 
-ModelTrainerConfig=namedtuple('ModelTrainerConfig',["trained_model_file_path","base_accuracy"])
+ModelTrainerConfig=namedtuple('ModelTrainerConfig',["trained_model_file_path","base_accuracy","model_config_file_path"])
 #base_accuracy is the minimum expected accuracy
 
 

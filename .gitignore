@@ -132,3 +132,11 @@ dmypy.json
 /housing/artifact
 *.csv
 *.ipynb
+
+ref
+/notebook/example.ipynb
+notebook/example.ipynb
+
+/EDA.ipynb
+notebook/example.ipynb
+

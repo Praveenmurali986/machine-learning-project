@@ -69,3 +69,15 @@ def load_obj(file_path:str):
             dill.load(file_obj)
     except Exception as e:
         raise HousingException(e,sys) from e
+
+
+def write_yaml_file(file_path,data:dict=None):
+
+    try:
+        os.makedirs(os.path.dirname(file_path),exist_ok=True)
+        with open(file_path,'wb') as yaml_file:
+            if data is not None:
+                yaml.dump(data,file_path)
+
+    except Exception as e:
+        raise HousingException(e,sys) from e
