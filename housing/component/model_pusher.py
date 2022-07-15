@@ -50,5 +50,12 @@ class ModelPusher:
         except Exception as e:
             raise HousingException(e,sys) from e
 
+    def initiate_model_pusher(self):
+        try:
+            return self.export_model()
+            
+        except Exception as e:
+            raise HousingException(e,sys) from e
+
     def __del__(self):
         logging.info(f'{"="*20} model pusher log completed.{"="*20}')

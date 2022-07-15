@@ -1,17 +1,49 @@
-from housing.entity.model_factory import ModelFactory
+from email.mime import base
+from typing import List
+
+from sklearn import preprocessing
+from housing.entity.model_factory import GridSearchBestModel, MetricInfoArtifact, ModelFactory,evaluate_regression_model
 from housing.logger import logging
 from housing.exception import HousingException
 import os,sys
 from housing.entity.artifact_entitiy import DataTransformationArtifact,ModelTrainerArtifact
 from housing.entity.config_entity import *
-from housing.util.util import load_data,load_obj
-from housing.config.configuration import Configuration
+from housing.util.util import load_data,load_obj, save_object
+from housing.config.configuration import ModelTrainerConfig
 
 
 
 
 
+class HousingEstimatorModel:
+    def __init__(self,
+                 preprocessing_object,
+                 model_object) -> None:
+        '''
+        trained model constructor
+        preprocessing_object: preprocessing_object
+        trained_model_object: trained_model_object
+        '''
+        try:
+            self.preprocessing_object=preprocessing_object
+            self.model_object=model_object
+        except Exception as e:
+            raise HousingException(e,sys) from e
 
+        def predict(self,X):
+            """
+            function accepts raw inputs and then transformed raw input using preprocessing_object
+            which gurantees that the inputs are in the same format as the training data
+            At last it perform prediction on transformed features
+            """
+            transformed_feature=self.preprocessing_object.transform(X)
+            return self.trained_model_object.predict(transformed_feature)
+
+        def __repr__(self):
+            return f'{type(self.trained_model_object).__name__}()'
+
+        def __str__(self):
+            return f'{type(self.trained_model_object).__name__}()'
 
 
 
@@ -36,7 +68,7 @@ class ModelTrainer:
             test_array=load_data(file_path=transformed_test_file_path)
 
             logging.info('splitting train and test input and target feature')
-            x_train,y_train,x_test,y_test=train_array[:,:-1],train_array[:,-1],test_array[:,:-1],test_array[:,-1]
+            X_train,y_train,X_test,y_test=train_array[:,:-1],train_array[:,-1],test_array[:,:-1],test_array[:,-1]
 
             logging.info('extracting model config file path')
             model_config_file_path = self.model_trainer_config.model_config_file_path
@@ -48,17 +80,42 @@ class ModelTrainer:
             logging.info(f'excpected accuracy:{base_accuracy}')
 
             logging.info(f'initiating operation model selection')
-            best_model=model_factory.get_best_model(X=x_train,y=y_train,base_accuracy=base_accuracy)
+            best_model=model_factory.get_best_model(X=X_train,y=y_train,base_accuracy=base_accuracy)
 
-            model_trainer_artifact=  ModelTrainerArtifact(is_trained=True,message="Model Trained successfully",
-            trained_model_file_path=trained_model_file_path,
-            train_rmse=metric_info.train_rmse,
-            test_rmse=metric_info.test_rmse,
-            train_accuracy=metric_info.train_accuracy,
-            test_accuracy=metric_info.test_accuracy,
-            model_accuracy=metric_info.model_accuracy
+            logging.info(f'best model found on training dataset: {best_model}')
+
+            logging.info(f'extrating trained model list.')
+            grid_searched_best_model_list:List[GridSearchBestModel]=model_factory.grid_searched_best_model_list
+
+            model_list=[model.best_model for model in grid_searched_best_model_list]
+            logging.info(f'evaluating all the trained model in training and testing datasets.')
+            metric_info:MetricInfoArtifact=evaluate_regression_model(model_list=model_list,
+                                                  X_train=X_train,
+                                                  y_train=y_train,
+                                                  X_test=X_test,
+                                                  y_test=y_test,
+                                                  base_accuracy=base_accuracy
+                                                  )
+            logging.info(f'best found model on both trainig and testing dataset.')
+
+            preprocessing_obj=load_obj(file_path=self.data_transformation_artifact.preprocessed_object_file_path)
+            model_object=metric_info.model_object
+
+            trained_model_file_path=self.model_trainer_config.trained_model_file_path
+            housing_model=HousingEstimatorModel(preprocessing_object=preprocessing_obj,trained_model_object=model_object)
             
-            )
+            logging.info(f'saving model at path {trained_model_file_path}')
+            save_object(file_path=trained_model_file_path,obj=housing_model)
+
+            model_trainer_artifact=ModelTrainerArtifact(is_trained=True,
+                                                        message='model trained succesfully',
+                                                        trained_model_file_path=trained_model_file_path,
+                                                        train_rmse=metric_info.train_rmse,
+                                                        test_rmse=metric_info.test_rmse,
+                                                        train_accuracy=metric_info.train_accuracy,
+                                                        test_accuracy=metric_info.test_accuracy,
+                                                        model_accuracy=metric_info.model_accuracy
+                                                        )
 
             logging.info(f"Model Trainer Artifact: {model_trainer_artifact}")
             return model_trainer_artifact
@@ -66,4 +123,7 @@ class ModelTrainer:
             
         except Exception as e:
             raise HousingException(e,sys) from e
+    def __del__(self):
+        logging.info(f"{'>>' * 30}Model trainer log completed.{'<<' * 30} ")
+
         

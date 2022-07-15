@@ -2,19 +2,16 @@ from flask import Flask
 from housing.logger import logging
 from housing.exception import HousingException
 import sys
+from flask import abort, send_file, render_template
 
 app=Flask(__name__)
 
 @app.route('/',methods=['GET','POST'])
 def index():
     try:
-        raise Exception('testing exception module')
+        return render_template('index.html')
     except Exception as e:
-        housing=HousingException(e,sys)
-        logging.info(housing.error_message)
-        logging.info('testing logging module')
-
-    return 'starting machine leaerning project'
+        raise HousingException(e,sys) from e
 
 if __name__=='__main__':
     app.run(debug=True)
