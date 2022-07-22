@@ -1,5 +1,4 @@
 from urllib import response
-from nbformat import write
 import numpy as np
 from pandas import read_table
 from housing.constant import *
@@ -9,7 +8,7 @@ from housing.entity.config_entity import ModelEvaluationConfig
 from housing.entity.artifact_entitiy import (DataIngestionArtifact,DataValidationArtifact,ModelTrainerArtifact, ModelEvaluationArtifact)
 import os,sys
 from housing.util.util import read_yaml_file,load_obj,write_yaml_file,load_data
-from housing.entity.model_factory import MetricInfoArifact,evaluate_regression_model
+from housing.entity.model_factory import evaluate_regression_model
 
 
 

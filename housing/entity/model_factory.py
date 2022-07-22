@@ -1,9 +1,7 @@
 from collections import namedtuple
-from re import X
 import sys
 from typing import List
 import numpy as np
-from regex import F
 import yaml
 from housing.exception import HousingException
 from housing.logger import logging
