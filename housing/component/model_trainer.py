@@ -8,8 +8,8 @@ from housing.exception import HousingException
 import os,sys
 from housing.entity.artifact_entitiy import DataTransformationArtifact,ModelTrainerArtifact
 from housing.entity.config_entity import *
-from housing.util.util import load_data,load_obj, save_object
-from housing.config.configuration import ModelTrainerConfig
+from housing.util.util import load_data, load_numpy_array_data,load_obj, save_object
+from housing.entity.config_entity import ModelTrainerConfig
 
 
 
@@ -59,13 +59,14 @@ class ModelTrainer:
 
     def initiate_model_trainer(self)->ModelTrainerArtifact:
         try:
+            
             logging.info('loading transformed trainig dataset')
             transformed_train_file_path=self.data_transformation_artifact.transformed_train_file_path
-            train_array=load_data(file_path=transformed_train_file_path)
+            train_array=load_numpy_array_data(file_path=transformed_train_file_path)
 
             logging.info('loading transformed testing dataset')
             transformed_test_file_path=self.data_transformation_artifact.transformed_test_file_path
-            test_array=load_data(file_path=transformed_test_file_path)
+            test_array=load_numpy_array_data(file_path=transformed_test_file_path)
 
             logging.info('splitting train and test input and target feature')
             X_train,y_train,X_test,y_test=train_array[:,:-1],train_array[:,-1],test_array[:,:-1],test_array[:,-1]
@@ -102,7 +103,7 @@ class ModelTrainer:
             model_object=metric_info.model_object
 
             trained_model_file_path=self.model_trainer_config.trained_model_file_path
-            housing_model=HousingEstimatorModel(preprocessing_object=preprocessing_obj,trained_model_object=model_object)
+            housing_model=HousingEstimatorModel(preprocessing_object=preprocessing_obj,model_object=model_object)
             
             logging.info(f'saving model at path {trained_model_file_path}')
             save_object(file_path=trained_model_file_path,obj=housing_model)

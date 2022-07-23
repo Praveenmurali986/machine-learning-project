@@ -73,10 +73,10 @@ def view_experiment_history():
     }
     return render_template('experiment_history.html', context=context)
 
-@app.route('/trian',methods=['GET','POST'])
+@app.route('/train',methods=['GET','POST'])
 def train():
     message=''
-    pipeline=Pipeline(congig=Configuration(current_time_stamp=get_current_time_stamp()))
+    pipeline=Pipeline(config=Configuration(current_time_stamp=get_current_time_stamp()))
     if not Pipeline.experiment.running_status:
         message='training started'
         pipeline.start()

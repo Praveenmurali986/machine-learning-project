@@ -108,7 +108,7 @@ class ModelEvaluation:
             target_column_name=schema_content[TARGET_COLUMN_KEY]
 
             logging.info(f'converting target column into numpy array.')
-            train_target_array=np.arary(train_dataframe[target_column_name])
+            train_target_array=np.array(train_dataframe[target_column_name])
             test_target_array=np.array(test_dataframe[target_column_name])
             logging.info(f'target column convertion completed.')
 

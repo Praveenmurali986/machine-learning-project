@@ -162,24 +162,22 @@ class Configuration:
             model_trainer_config_info=self.config_info[MODEL_TRAINER_CONFIG_KEY]
 
             model_trainer_artifact_dir=os.path.join(
-                artifact_dir,
-                model_trainer_config_info[MODEL_TRAINER_ARTIFACT_DIR],
-                self.time_stamp
-            )
+                                                    artifact_dir,
+                                                    MODEL_TRAINER_ARTIFACT_DIR,
+                                                    self.time_stamp)
 
             trained_model_file_path=os.path.join(
-                model_trainer_artifact_dir,
-                model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_DIR_KEY],
-                model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY]
-            )
+                                        model_trainer_artifact_dir,
+                                        model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_DIR_KEY],
+                                        model_trainer_config_info[MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY]
+                                        )
 
             base_accuracy=model_trainer_config_info[MODEL_TRAINER_BASE_ACCURACY_KEY]
 
-            model_config_file_path=os.path.join(
-                model_trainer_artifact_dir,
-                model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_DIR_KEY],
-                model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_FILE_NAME_KEY]
-            )
+            model_config_file_path=os.path.join(ROOT_DIR,
+                                        model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_DIR_KEY],
+                                        model_trainer_config_info[MODEL_TRAINER_MODEL_CONFIG_FILE_NAME_KEY]
+                                                    )
 
             model_trainer_config=ModelTrainerConfig(
                 trained_model_file_path=trained_model_file_path,
@@ -201,13 +199,13 @@ class Configuration:
                 MODEL_EVALUATION_ARTIFACT_DIR
             )
 
-            model_evaluation_file_name=os.path.join(
+            model_evaluation_file_path=os.path.join(
                 artifact_dir,
                 model_evaluation_config[MODEL_EVALUATION_FILE_NAME_KEY]
             )
 
             response=ModelEvaluationConfig(
-                model_evaluation_file_path=response,
+                model_evaluation_file_path=model_evaluation_file_path,
                 time_stamp=self.time_stamp
             )
 
