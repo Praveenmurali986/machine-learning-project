@@ -1,9 +1,10 @@
-flask
+numpy
+Flask
 gunicorn
 sklearn
 pandas
-numpy
 PyYAML
-pip==22.2
 evidently
+dill
+matplotlib
 -e .
