@@ -88,7 +88,7 @@ def train():
     }
     return render_template('train.html',context=context)
 
-@app.route('/predict',methods=['GET,POST'])
+@app.route('/predict',methods=['GET','POST'])
 def predict():
     context={
         HOUSING_DATA_KEY:None,
@@ -104,7 +104,7 @@ def predict():
         population=float(request.form['population'])
         households=float(request.form['households'])
         median_income=float(request.form['median_income'])
-        ocean_proximity=request.form['ocean_procimity']
+        ocean_proximity=request.form['ocean_proximity']
 
         housing_data=HousingData(longitude=longitude,
                                    latitude=latitude,
@@ -134,7 +134,7 @@ def saved_models_dir(req_path):
     print(f'req_path :{req_path}')
     abs_path=os.path.join(req_path)
     print(abs_path)
-    if not os.path.join(abs_path):
+    if not os.path.exists(abs_path):
         return abort(404)
     if os.path.isfile(abs_path):
         return send_file(abs_path)
@@ -179,7 +179,7 @@ def render_log_dir(req_path):
     
     if os.path.isfile(abs_path):
         log_df=get_log_dataframe(abs_path)
-        context={'log':log_df.to_html(classed='table-striped',index=False)}
+        context={'log':log_df.to_html(classes='table-striped',index=False)}
         return render_template('log.html',context=context)
 
     files={os.path.join(abs_path,file):file for file in os.listdir(abs_path)}
